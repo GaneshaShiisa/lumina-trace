@@ -1,69 +1,52 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Rigidbody))]
 public class LuminaCoreController : MonoBehaviour
 {
-    [Header("Movement Settings")]
-    [SerializeField] private float moveSpeed = 10.0f;
-    [SerializeField] private float turnSlerpRate = 5.0f;
+    [SerializeField] private ParticleSystem dustParticleSystem;
 
-    [Header("Interaction Settings")]
-    [SerializeField] private LayerMask interactionLayer = -1;
+    private Rigidbody rb;
+    private ParticleSystem.ShapeModule particleShape;
+    private ParticleSystem.VelocityOverLifetimeModule velocityOverLifetime;
 
-    private Vector3 targetDirection;
-    private Camera mainCamera;
+    private Vector3 direction;
+    private Camera camera;
 
     private void Start()
     {
-        mainCamera = Camera.main;
-        targetDirection = transform.forward;
+        camera = Camera.main;
+        if (camera == null)
+        {
+            Debug.LogError("Error: MainCamera not found in active scene.");
+        }
+
+        direction = transform.forward;
+        rb = GetComponent<Rigidbody>();
+
+        velocityOverLifetime = dustParticleSystem.velocityOverLifetime;
+    }
+
+    public void OnAttack(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            rb.AddForce(direction * 1f, ForceMode.Impulse);
+        }
     }
 
     private void Update()
     {
-        HandleInput();
-        MoveAndRotate();
+        Vector3 velocity = rb.linearVelocity;
+
+        // カメラの位置をプレイヤーの後方に設定し、少し上にオフセット
+        Vector3 targetPosition = transform.position - (transform.forward * 5.0f) - velocity + (Vector3.up * 2.0f);
+        camera.transform.position = targetPosition;
+        camera.transform.LookAt(transform.position + Vector3.up * 1.0f);
+
+        // 速度に応じてパーティクルの速度を調整
+        velocityOverLifetime.xMultiplier = -velocity.x;
+        velocityOverLifetime.yMultiplier = -velocity.y;
+        velocityOverLifetime.zMultiplier = -velocity.z;
     }
-
-    private void HandleInput()
-    {
-        // if (Input.GetMouseButtonDown(0))
-        // {
-        //     Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        //     if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, interactionLayer))
-        //     {
-        //         SetTargetPoint(hitInfo.point);
-        //     }
-        //     else
-        //     {
-        //         // 平面に対するレイキャスト（フォールバック）
-        //         Plane plane = new Plane(-mainCamera.transform.forward, transform.position);
-        //         if (plane.Raycast(ray, out float enter))
-        //         {
-        //             SetTargetPoint(ray.GetPoint(enter));
-        //         }
-        //     }
-        // }
-    }
-
-    private void SetTargetPoint(Vector3 point)
-    {
-        Vector3 direction = (point - transform.position).normalized;
-        if (direction != Vector3.zero)
-        {
-            targetDirection = direction;
-        }
-    }
-
-    private void MoveAndRotate()
-    {
-        // 旋回制御 (Slerp)
-        Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnSlerpRate);
-
-        // 前進移動
-        transform.Translate(Vector3.forward * (moveSpeed * Time.deltaTime));
-    }
-
-    public void SetMoveSpeed(float speed) => moveSpeed = speed;
-    public void SetTurnSlerpRate(float rate) => turnSlerpRate = rate;
 }
