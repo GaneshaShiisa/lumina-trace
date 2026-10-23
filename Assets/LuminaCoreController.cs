@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody))]
 public class LuminaCoreController : MonoBehaviour
@@ -12,6 +13,14 @@ public class LuminaCoreController : MonoBehaviour
 
     private Vector3 direction;
     private Camera camera;
+
+    private class ActiveForce
+    {
+        public float force;
+        public Vector3 direction;
+        public float remainingTime;
+    }
+    private List<ActiveForce> activeForces = new List<ActiveForce>();
 
     private void Start()
     {
@@ -31,7 +40,15 @@ public class LuminaCoreController : MonoBehaviour
     {
         if (value.isPressed)
         {
-            rb.AddForce(direction * 1f, ForceMode.Impulse);
+            // rb.AddForce(direction * 1f, ForceMode.Impulse);
+            Vector3 randomDir = Random.insideUnitSphere.normalized;
+
+            activeForces.Add(new ActiveForce
+            {
+                force = 10.0f,
+                direction = randomDir,
+                remainingTime = 1.5f,
+            });
         }
     }
 
@@ -48,5 +65,23 @@ public class LuminaCoreController : MonoBehaviour
         velocityOverLifetime.xMultiplier = -velocity.x;
         velocityOverLifetime.yMultiplier = -velocity.y;
         velocityOverLifetime.zMultiplier = -velocity.z;
+    }
+
+    private void FixedUpdate()
+    {
+        // Update active forces
+        Vector3 totalForce = Vector3.zero;
+        for (int i = activeForces.Count - 1; i >= 0; i--)
+        {
+            ActiveForce activeForce = activeForces[i];
+            totalForce += activeForce.direction * activeForce.force;
+            activeForce.remainingTime -= Time.fixedDeltaTime;
+
+            if (activeForce.remainingTime <= 0)
+            {
+                activeForces.RemoveAt(i);
+            }
+        }
+        rb.AddForce(totalForce, ForceMode.Force);
     }
 }
