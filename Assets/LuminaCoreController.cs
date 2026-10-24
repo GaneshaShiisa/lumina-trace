@@ -40,16 +40,25 @@ public class LuminaCoreController : MonoBehaviour
     {
         if (value.isPressed)
         {
-            // rb.AddForce(direction * 1f, ForceMode.Impulse);
-            Vector3 randomDir = Random.insideUnitSphere.normalized;
-
-            activeForces.Add(new ActiveForce
-            {
-                force = 10.0f,
-                direction = randomDir,
-                remainingTime = 1.5f,
-            });
+            AttackAction();
         }
+    }
+
+    public void OnAttack()
+    {
+        AttackAction();
+    }
+
+    private void AttackAction()
+    {
+        Vector3 randomDir = Random.insideUnitSphere.normalized;
+
+        activeForces.Add(new ActiveForce
+        {
+            force = 10.0f,
+            direction = randomDir,
+            remainingTime = 1.5f,
+        });
     }
 
     private void Update()
