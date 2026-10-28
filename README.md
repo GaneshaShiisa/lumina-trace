@@ -1,9 +1,5 @@
 # Lumina Trace
 
-![Lumina Trace Banner](https://via.placeholder.com/800x400?text=Lumina+Trace) <!-- ※完成後にスクリーンショットやGIF画像に差し替えてください -->
-
-## 概要 (Overview)
-
 `Lumina Trace` は、3D空間内を浮游する光体コア（彗星）をコントロールし、空間に残る美しい光のリボン（Trail）や宇宙塵（Dust Particles）、拡散する衝撃波（Burst Particles）などのインタラクティブな描画表現を楽しむ作品です。
 
 [![Play Lumina Trace](https://img.shields.io/badge/Play-Lumina%20Trace-brightgreen?style=for-the-badge&logo=unity)](https://ganeshashiisa.github.io/lumina-trace/)
