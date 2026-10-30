@@ -2,7 +2,7 @@
 
 `Lumina Trace` は、3D空間内を浮游する光体コア（彗星）をコントロールし、空間に残る美しい光のリボン（Trail）や宇宙塵（Dust Particles）、拡散する衝撃波（Burst Particles）などのインタラクティブな描画表現を楽しむ作品です。
 
-[![Play Lumina Trace](https://img.shields.io/badge/Play-Lumina%20Trace-brightgreen?style=for-the-badge&logo=unity)](https://ganeshashiisa.github.io/lumina-trace/)
+[![Play Lumina Trace](https://img.shields.io/badge/Play-Lumina%20Trace-brightgreen?style=for-the-badge&logo=unity)](https://ganesha-shiisa.github.io/lumina-trace/)
 
 ## 主な機能 (Features)
 
@@ -29,7 +29,7 @@
 
 1. **リポジトリのクローン**:
    ```bash
-   git clone https://github.com/GaneshaShiisa/lumina-trace.git
+   git clone https://github.com/ganesha-shiisa/lumina-trace.git
    ```
 2. **Unity Hub で開く**:
    - Unity Hub を起動し、`Unity 6` (または対象のバージョン) でプロジェクトを追加して開きます。
@@ -42,4 +42,4 @@
 
 ## 作者 (Author)
 
-- **GaneshaShiisa** - [GitHub Profile](https://github.com/GaneshaShiisa)
+- **GaneshaShiisa** - [GitHub Profile](https://github.com/ganesha-shiisa)
