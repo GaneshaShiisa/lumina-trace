@@ -52,12 +52,14 @@ public class LuminaCoreController : MonoBehaviour
     private void AttackAction()
     {
         Vector3 randomDir = Random.insideUnitSphere.normalized;
+        float force = Random.Range(5f, 15f);
+        float impactTime = Random.Range(0.5f, 2.0f);
 
         activeForces.Add(new ActiveForce
         {
-            force = 10.0f,
+            force = force,
             direction = randomDir,
-            remainingTime = 1.5f,
+            remainingTime = impactTime,
         });
     }
 
