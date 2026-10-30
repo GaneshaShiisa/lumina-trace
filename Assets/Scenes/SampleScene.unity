@@ -502,6 +502,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LuminaCoreController
   dustParticleSystem: {fileID: 1484605734}
+  timeline: {fileID: 255059543}
 --- !u!135 &672212920
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -720,8 +721,8 @@ TrailRenderer:
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 0.49735057
-        value: 0.53125
+        time: 0.5000514
+        value: 0.20397949
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -729,8 +730,8 @@ TrailRenderer:
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 1
-        value: 0
+        time: 0.9891968
+        value: 0.19393921
         inSlope: 0
         outSlope: 0
         tangentMode: 0

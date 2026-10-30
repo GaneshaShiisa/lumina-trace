@@ -6,12 +6,11 @@ using System.Collections.Generic;
 public class LuminaCoreController : MonoBehaviour
 {
     [SerializeField] private ParticleSystem dustParticleSystem;
+    [SerializeField] private GameObject timeline;
 
     private Rigidbody rb;
-    private ParticleSystem.ShapeModule particleShape;
     private ParticleSystem.VelocityOverLifetimeModule velocityOverLifetime;
 
-    private Vector3 direction;
     private Camera camera;
 
     private class ActiveForce
@@ -20,7 +19,9 @@ public class LuminaCoreController : MonoBehaviour
         public Vector3 direction;
         public float remainingTime;
     }
-    private List<ActiveForce> activeForces = new List<ActiveForce>();
+    private readonly List<ActiveForce> activeForces = new();
+
+    private float idleTime;
 
     private void Start()
     {
@@ -30,10 +31,12 @@ public class LuminaCoreController : MonoBehaviour
             Debug.LogError("Error: MainCamera not found in active scene.");
         }
 
-        direction = transform.forward;
         rb = GetComponent<Rigidbody>();
 
         velocityOverLifetime = dustParticleSystem.velocityOverLifetime;
+
+
+        idleTime = 0;
     }
 
     public void OnAttack(InputValue value)
@@ -42,6 +45,7 @@ public class LuminaCoreController : MonoBehaviour
         {
             AttackAction();
         }
+        idleTime = 0;
     }
 
     public void OnAttack()
@@ -51,7 +55,13 @@ public class LuminaCoreController : MonoBehaviour
 
     private void AttackAction()
     {
-        Vector3 randomDir = Random.insideUnitSphere.normalized;
+        Vector3 velDir = rb.linearVelocity.normalized;
+        Vector3 randomDir =
+            (
+                -velDir * 0.2f +
+                Random.insideUnitSphere * 0.8f
+            ).normalized;
+
         float force = Random.Range(5f, 15f);
         float impactTime = Random.Range(0.5f, 2.0f);
 
@@ -67,15 +77,40 @@ public class LuminaCoreController : MonoBehaviour
     {
         Vector3 velocity = rb.linearVelocity;
 
-        // カメラの位置をプレイヤーの後方に設定し、少し上にオフセット
-        Vector3 targetPosition = transform.position - (transform.forward * 5.0f) - velocity + (Vector3.up * 2.0f);
-        camera.transform.position = targetPosition;
-        camera.transform.LookAt(transform.position + Vector3.up * 1.0f);
-
         // 速度に応じてパーティクルの速度を調整
         velocityOverLifetime.xMultiplier = -velocity.x;
         velocityOverLifetime.yMultiplier = -velocity.y;
         velocityOverLifetime.zMultiplier = -velocity.z;
+    }
+
+    private Vector3 cameraVelocity;
+
+    void LateUpdate()
+    {
+        Vector3 velocity = rb.linearVelocity;
+
+        Vector3 targetPosition =
+            transform.position
+            - transform.forward * 5.0f
+            - velocity
+            + Vector3.up * 2.0f;
+
+        camera.transform.position = Vector3.SmoothDamp(
+            camera.transform.position,
+            targetPosition,
+            ref cameraVelocity,
+            1.5f
+        );
+
+        Quaternion targetRotation = Quaternion.LookRotation(
+            transform.position + Vector3.up - camera.transform.position
+        );
+
+        camera.transform.rotation = Quaternion.Slerp(
+            camera.transform.rotation,
+            targetRotation,
+            Time.deltaTime * 3.0f
+        );
     }
 
     private void FixedUpdate()
@@ -94,5 +129,19 @@ public class LuminaCoreController : MonoBehaviour
             }
         }
         rb.AddForce(totalForce, ForceMode.Force);
+
+        idleTime += Time.fixedDeltaTime;
+        if (timeline != null)
+        {
+            if (idleTime > 5.0f)
+            {
+                timeline.SetActive(true);
+            }
+            else
+            {
+                timeline.SetActive(false);
+            }
+        }
+
     }
 }
