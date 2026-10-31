@@ -1,7 +1,7 @@
 # Lumina Trace
 
 <p align="center">
-  <img src=".github/images/lumina-trace.png" width="800">
+  <img src=".github/images/lumina-trace.gif" width="800">
 </p>
 
 [![Play Lumina Trace](https://img.shields.io/badge/Play-Lumina%20Trace-brightgreen?style=for-the-badge&logo=unity)](https://ganesha-shiisa.github.io/lumina-trace/)
